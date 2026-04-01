@@ -4,8 +4,8 @@ from tkinter import ttk, messagebox
 from typing import List
 
 
-WINDOW_WIDTH = 760
-WINDOW_HEIGHT = 640
+WINDOW_WIDTH = 820
+WINDOW_HEIGHT = 700
 AUTO_GUESS_DELAY_MS = 500
 
 
@@ -42,7 +42,7 @@ class NumberGuessingGameGUI:
         self.root.title("猜四位数字游戏")
         self.root.geometry("{0}x{1}".format(WINDOW_WIDTH, WINDOW_HEIGHT))
         self.root.resizable(False, False)
-        self.root.configure(bg="#f0f8ff")
+        self.root.configure(bg="#e9eef5")
 
         self._setup_style()
 
@@ -71,39 +71,50 @@ class NumberGuessingGameGUI:
         style = ttk.Style(self.root)
         style.theme_use("clam")
 
-        style.configure("Card.TFrame", background="#f8f9fa")
+        style.configure("Card.TFrame", background="#f7f9fc")
         style.configure(
             "Title.TLabel",
-            font=("Microsoft YaHei", 18, "bold"),
-            foreground="#2c3e50",
-            background="#f8f9fa",
+            font=("Microsoft YaHei", 20, "bold"),
+            foreground="#1f2d3d",
+            background="#f7f9fc",
         )
         style.configure(
             "SubTitle.TLabel",
             font=("Microsoft YaHei", 12, "bold"),
-            foreground="#2c3e50",
-            background="#f8f9fa",
+            foreground="#26384a",
+            background="#f7f9fc",
         )
         style.configure(
             "Rule.TLabel",
             font=("Microsoft YaHei", 10),
-            foreground="#34495e",
-            background="#f8f9fa",
+            foreground="#41566d",
+            background="#f7f9fc",
             justify="left",
         )
 
-        style.configure("Accent.TButton", font=("Microsoft YaHei", 10))
-        style.configure("Secondary.TButton", font=("Microsoft YaHei", 10))
-        style.configure("AI.TButton", font=("Microsoft YaHei", 10))
-        style.configure("Switch.TButton", font=("Microsoft YaHei", 10))
-        style.configure("Record.TButton", font=("Microsoft YaHei", 9))
+        style.configure("Accent.TButton", font=("Microsoft YaHei", 10, "bold"), padding=(12, 7))
+        style.configure("Secondary.TButton", font=("Microsoft YaHei", 10), padding=(12, 7))
+        style.configure("AI.TButton", font=("Microsoft YaHei", 10, "bold"), padding=(12, 7))
+        style.configure("Switch.TButton", font=("Microsoft YaHei", 10), padding=(12, 7))
+        style.configure("Record.TButton", font=("Microsoft YaHei", 9), padding=(10, 6))
+
+        style.configure("Accent.TButton", foreground="#ffffff", background="#2d7ff9")
+        style.map("Accent.TButton", background=[("active", "#1f6fe2"), ("pressed", "#195ec2")])
+        style.configure("AI.TButton", foreground="#ffffff", background="#169d87")
+        style.map("AI.TButton", background=[("active", "#128b78"), ("pressed", "#0f7768")])
+        style.configure("Secondary.TButton", foreground="#1f2d3d", background="#e4ebf5")
+        style.map("Secondary.TButton", background=[("active", "#d7e1ef"), ("pressed", "#c9d7ea")])
+        style.configure("Switch.TButton", foreground="#1f2d3d", background="#eaf0f8")
+        style.map("Switch.TButton", background=[("active", "#dde7f4"), ("pressed", "#d1dded")])
+        style.configure("Record.TButton", foreground="#2f4154", background="#ecf1f8")
+        style.map("Record.TButton", background=[("active", "#dfe7f3"), ("pressed", "#d5deed")])
 
     def _build_player_frame(self) -> None:
         for col in range(4):
             self.player_frame.columnconfigure(col, weight=1)
 
         title = ttk.Label(self.player_frame, text="玩家猜数模式", style="Title.TLabel")
-        title.grid(row=0, column=0, columnspan=4, pady=(20, 10))
+        title.grid(row=0, column=0, columnspan=4, pady=(24, 12))
 
         rule_text = (
             "游戏规则：\n"
@@ -112,9 +123,9 @@ class NumberGuessingGameGUI:
             "3. 返回4表示完全猜中"
         )
         rule_frame = ttk.Frame(self.player_frame, style="Card.TFrame")
-        rule_frame.grid(row=1, column=0, columnspan=4, padx=20, pady=(0, 15), sticky="ew")
+        rule_frame.grid(row=1, column=0, columnspan=4, padx=28, pady=(0, 18), sticky="ew")
 
-        ttk.Label(rule_frame, text=rule_text, style="Rule.TLabel").pack(padx=20, pady=12)
+        ttk.Label(rule_frame, text=rule_text, style="Rule.TLabel").pack(padx=20, pady=14)
 
         ttk.Label(self.player_frame, text="你的猜测：", style="SubTitle.TLabel").grid(
             row=2, column=0, padx=5, pady=10
@@ -123,68 +134,68 @@ class NumberGuessingGameGUI:
         vcmd_guess = (self.root.register(self._validate_guess_input), "%P")
         self.player_guess_entry = ttk.Entry(
             self.player_frame,
-            font=("Microsoft YaHei", 14),
-            width=12,
+            font=("Microsoft YaHei", 15),
+            width=14,
             justify="center",
             validate="key",
             validatecommand=vcmd_guess,
         )
-        self.player_guess_entry.grid(row=2, column=1, padx=5, pady=10)
+        self.player_guess_entry.grid(row=2, column=1, padx=8, pady=12, ipady=3)
 
         ttk.Button(
             self.player_frame,
             text="手动提交",
             command=self.player_submit_guess,
             style="Accent.TButton",
-        ).grid(row=2, column=2, padx=5, pady=10)
+        ).grid(row=2, column=2, padx=8, pady=12)
 
         ttk.Button(
             self.player_frame,
             text="AI自动猜",
             command=self.player_ai_auto_guess,
             style="AI.TButton",
-        ).grid(row=2, column=3, padx=5, pady=10)
+        ).grid(row=2, column=3, padx=8, pady=12)
 
         ttk.Button(
             self.player_frame,
             text="重置游戏",
             command=self.player_reset_game,
             style="Secondary.TButton",
-        ).grid(row=3, column=1, padx=5, pady=10)
+        ).grid(row=3, column=1, padx=8, pady=10)
 
         ttk.Button(
             self.player_frame,
             text="切换到AI猜数模式",
             command=self.show_ai_mode,
             style="Switch.TButton",
-        ).grid(row=3, column=2, padx=5, pady=10)
+        ).grid(row=3, column=2, padx=8, pady=10)
 
         self.player_feedback_label = tk.Label(
             self.player_frame,
             text="请输入4位数字开始游戏，或点击“AI自动猜”查看自动推理过程。",
             font=("Microsoft YaHei", 12),
-            bg="#f0f8ff",
-            fg="#3498db",
-            wraplength=650,
+            bg="#e9eef5",
+            fg="#2d6ea3",
+            wraplength=720,
             justify="center",
         )
-        self.player_feedback_label.grid(row=4, column=0, columnspan=4, pady=12)
+        self.player_feedback_label.grid(row=4, column=0, columnspan=4, padx=20, pady=14)
 
         self.player_count_label = tk.Label(
             self.player_frame,
             text="当前猜测次数：0",
             font=("Microsoft YaHei", 10),
-            bg="#f0f8ff",
-            fg="#7f8c8d",
+            bg="#e9eef5",
+            fg="#627283",
         )
-        self.player_count_label.grid(row=5, column=0, columnspan=4, pady=(0, 20))
+        self.player_count_label.grid(row=5, column=0, columnspan=4, pady=(0, 24))
 
     def _build_ai_frame(self) -> None:
         for col in range(5):
             self.ai_frame.columnconfigure(col, weight=1)
 
         title = ttk.Label(self.ai_frame, text="AI猜数模式（玩家反馈版）", style="Title.TLabel")
-        title.grid(row=0, column=0, columnspan=5, pady=(20, 10))
+        title.grid(row=0, column=0, columnspan=5, pady=(24, 12))
 
         rule_text = (
             "游戏规则：\n"
@@ -194,8 +205,8 @@ class NumberGuessingGameGUI:
             "4. 当你反馈4时，表示AI猜中了"
         )
         rule_frame = ttk.Frame(self.ai_frame, style="Card.TFrame")
-        rule_frame.grid(row=1, column=0, columnspan=5, padx=20, pady=(0, 15), sticky="ew")
-        ttk.Label(rule_frame, text=rule_text, style="Rule.TLabel").pack(padx=20, pady=12)
+        rule_frame.grid(row=1, column=0, columnspan=5, padx=28, pady=(0, 18), sticky="ew")
+        ttk.Label(rule_frame, text=rule_text, style="Rule.TLabel").pack(padx=20, pady=14)
 
         ttk.Label(self.ai_frame, text="AI当前猜测：", style="SubTitle.TLabel").grid(
             row=2, column=0, padx=5, pady=10, sticky="e"
@@ -203,10 +214,10 @@ class NumberGuessingGameGUI:
         self.ai_guess_display = ttk.Label(
             self.ai_frame,
             text="未开始",
-            font=("Microsoft YaHei", 16, "bold"),
-            foreground="#e67e22",
+            font=("Microsoft YaHei", 18, "bold"),
+            foreground="#c66a16",
         )
-        self.ai_guess_display.grid(row=2, column=1, padx=5, pady=10, sticky="w")
+        self.ai_guess_display.grid(row=2, column=1, padx=8, pady=12, sticky="w")
 
         ttk.Label(self.ai_frame, text="你的反馈（0~4）：", style="SubTitle.TLabel").grid(
             row=2, column=2, padx=5, pady=10, sticky="e"
@@ -216,41 +227,41 @@ class NumberGuessingGameGUI:
         self.feedback_entry = ttk.Entry(
             self.ai_frame,
             font=("Microsoft YaHei", 14),
-            width=6,
+            width=8,
             justify="center",
             validate="key",
             validatecommand=vcmd_feedback,
             state="disabled",
         )
-        self.feedback_entry.grid(row=2, column=3, padx=5, pady=10, sticky="w")
+        self.feedback_entry.grid(row=2, column=3, padx=8, pady=12, sticky="w", ipady=2)
 
         ttk.Button(
             self.ai_frame,
             text="开始AI猜测",
             command=self.start_ai_first_guess,
             style="AI.TButton",
-        ).grid(row=2, column=4, padx=5, pady=10)
+        ).grid(row=2, column=4, padx=8, pady=12)
 
         ttk.Button(
             self.ai_frame,
             text="提交反馈",
             command=self.submit_feedback,
             style="Accent.TButton",
-        ).grid(row=3, column=3, padx=5, pady=10)
+        ).grid(row=3, column=3, padx=8, pady=10)
 
         ttk.Button(
             self.ai_frame,
             text="重置模式",
             command=self.reset_ai_guess_mode,
             style="Secondary.TButton",
-        ).grid(row=3, column=2, padx=5, pady=10)
+        ).grid(row=3, column=2, padx=8, pady=10)
 
         ttk.Button(
             self.ai_frame,
             text="返回玩家猜数模式",
             command=self.show_player_mode,
             style="Switch.TButton",
-        ).grid(row=3, column=1, padx=5, pady=10)
+        ).grid(row=3, column=1, padx=8, pady=10)
 
         ttk.Label(self.ai_frame, text="游戏记录", style="SubTitle.TLabel").grid(
             row=4, column=0, columnspan=5, padx=20, pady=(10, 5), sticky="w"
@@ -258,13 +269,18 @@ class NumberGuessingGameGUI:
 
         self.record_text = tk.Text(
             self.ai_frame,
-            width=80,
-            height=14,
+            width=84,
+            height=15,
             font=("Consolas", 10),
-            bg="#f8f9fa",
+            bg="#f3f7fd",
+            fg="#243647",
+            bd=0,
+            highlightthickness=1,
+            highlightbackground="#d8e2ef",
+            highlightcolor="#9fb4cc",
             wrap="word",
         )
-        self.record_text.grid(row=5, column=0, columnspan=5, padx=20, pady=5)
+        self.record_text.grid(row=5, column=0, columnspan=5, padx=24, pady=6)
         self.record_text.config(state="disabled")
 
         ttk.Button(
@@ -272,16 +288,16 @@ class NumberGuessingGameGUI:
             text="清空记录",
             command=self.clear_record,
             style="Record.TButton",
-        ).grid(row=6, column=0, columnspan=5, pady=8)
+        ).grid(row=6, column=0, columnspan=5, pady=10)
 
         self.ai_guess_count_label = tk.Label(
             self.ai_frame,
             text="AI猜测次数：0",
             font=("Microsoft YaHei", 10),
-            bg="#f0f8ff",
-            fg="#7f8c8d",
+            bg="#e9eef5",
+            fg="#627283",
         )
-        self.ai_guess_count_label.grid(row=7, column=0, columnspan=5, pady=(0, 20))
+        self.ai_guess_count_label.grid(row=7, column=0, columnspan=5, pady=(0, 24))
 
     @staticmethod
     def _validate_guess_input(new_value: str) -> bool:
@@ -297,12 +313,12 @@ class NumberGuessingGameGUI:
 
     def show_player_mode(self) -> None:
         self.ai_frame.pack_forget()
-        self.player_frame.pack(fill="both", expand=True, padx=10, pady=10)
+        self.player_frame.pack(fill="both", expand=True, padx=14, pady=14)
         self.root.title("猜四位数字游戏 - 玩家猜数模式")
 
     def show_ai_mode(self) -> None:
         self.player_frame.pack_forget()
-        self.ai_frame.pack(fill="both", expand=True, padx=10, pady=10)
+        self.ai_frame.pack(fill="both", expand=True, padx=14, pady=14)
         self.root.title("猜四位数字游戏 - AI猜数模式")
 
     def player_submit_guess(self, guess=None) -> None:
@@ -404,6 +420,11 @@ class NumberGuessingGameGUI:
         feedback = self.feedback_entry.get().strip()
         if feedback == "":
             messagebox.showwarning("输入错误", "请输入 0~4 之间的整数。")
+            return
+
+        if not feedback.isdigit() or not 0 <= int(feedback) <= 4:
+            messagebox.showwarning("输入错误", "请输入 0~4 之间的整数。")
+            self.feedback_entry.delete(0, tk.END)
             return
 
         feedback_num = int(feedback)
